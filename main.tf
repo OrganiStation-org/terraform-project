@@ -143,15 +143,17 @@ module "keyvault" {
 }
 
 module "cosmosdb" {
-  source              = "./modules/cosmosdb"
-  resource_group_name = module.resource_group.name
-  location            = module.resource_group.location
-  name                = "${local.project_id}-cosmos-${local.env}"
-  throughput          = local.config.cosmos_throughput
-  subnet_id           = module.networking.private_endpoints_subnet_id
-  dns_zone_id         = module.private_dns.cosmos_dns_zone_id
-  secondary_location  = var.dr_location
-  tags                = local.common_tags
+  source                 = "./modules/cosmosdb"
+  resource_group_name    = module.resource_group.name
+  location               = module.resource_group.location
+  name                   = "${local.project_id}-cosmos-${local.env}"
+  throughput             = local.config.cosmos_throughput
+  subnet_id              = module.networking.private_endpoints_subnet_id
+  dns_zone_id            = module.private_dns.cosmos_dns_zone_id
+  secondary_location     = var.dr_location
+  dr_subnet_id           = module.dr_networking.private_endpoints_subnet_id
+  dr_resource_group_name = module.dr_resource_group.name
+  tags                   = local.common_tags
 }
 
 module "aks" {

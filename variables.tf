@@ -13,7 +13,7 @@ variable "location" {
 variable "dr_location" {
   type        = string
   description = "Disaster Recovery region"
-  default     = "southindia"
+  default     = "westus2"
 }
 
 variable "environment_configs" {
