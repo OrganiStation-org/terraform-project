@@ -5,3 +5,7 @@ variable "throughput" { type = number }
 variable "subnet_id" { type = string }
 variable "dns_zone_id" { type = string }
 variable "secondary_location" { type = string }
+variable "tags" {
+  type    = map(string)
+  default = {}
+}

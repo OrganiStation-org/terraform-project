@@ -9,3 +9,7 @@ variable "enable_autoscaling" { type = bool }
 variable "max_count" { type = number }
 variable "min_count" { type = number }
 variable "log_analytics_id" { type = string }
+variable "tags" {
+  type    = map(string)
+  default = {}
+}

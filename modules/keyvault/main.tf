@@ -6,6 +6,7 @@ resource "azurerm_key_vault" "this" {
   sku_name                    = var.sku_name
   enable_rbac_authorization   = true
   public_network_access_enabled = false
+  tags                        = var.tags
 }
 
 resource "azurerm_private_endpoint" "kv" {
@@ -13,6 +14,7 @@ resource "azurerm_private_endpoint" "kv" {
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = var.subnet_id
+  tags                = var.tags
 
   private_service_connection {
     name                           = "kv-connection"

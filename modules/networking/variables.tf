@@ -1,19 +1,12 @@
-variable "resource_group_name" {
-  type        = string
-  description = "Name of the resource group"
+variable "resource_group_name" { type = string }
+variable "location" { type = string }
+variable "vnet_name" { type = string }
+variable "env" { type = string }
+variable "address_space" {
+  type    = list(string)
+  default = ["10.0.0.0/16"]
 }
-
-variable "location" {
-  type        = string
-  description = "Azure region"
-}
-
-variable "vnet_name" {
-  type        = string
-  description = "Name of the virtual network"
-}
-
-variable "env" {
-  type        = string
-  description = "Environment name"
+variable "tags" {
+  type    = map(string)
+  default = {}
 }

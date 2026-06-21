@@ -4,6 +4,7 @@ resource "azurerm_kubernetes_cluster" "this" {
   resource_group_name = var.resource_group_name
   dns_prefix          = "${var.name}-dns"
   kubernetes_version  = "1.29"
+  tags                = var.tags
 
   default_node_pool {
     name                = "system"

@@ -13,6 +13,7 @@ resource "azurerm_storage_account" "this" {
   account_replication_type = "LRS"
   
   public_network_access_enabled = true
+  tags                          = var.tags
 }
 
 resource "azurerm_storage_container" "docs" {
