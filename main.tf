@@ -5,7 +5,7 @@ resource "random_string" "suffix" {
 }
 
 locals {
-  project_id = "${local.project_id}${random_string.suffix.result}"
+  project_id = "${var.project_name}${random_string.suffix.result}"
 }
 
 module "resource_group" {
