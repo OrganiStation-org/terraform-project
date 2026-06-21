@@ -1,0 +1,11 @@
+variable "resource_group_name" { type = string }
+variable "location" { type = string }
+variable "name" { type = string }
+variable "vnet_subnet_id" { type = string }
+variable "identity_id" { type = string }
+variable "node_count" { type = number }
+variable "vm_size" { type = string }
+variable "enable_autoscaling" { type = bool }
+variable "max_count" { type = number }
+variable "min_count" { type = number }
+variable "log_analytics_id" { type = string }
