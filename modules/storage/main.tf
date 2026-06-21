@@ -1,10 +1,3 @@
-variable "resource_group_name" { type = string }
-variable "location" { type = string }
-variable "name" { type = string }
-variable "subnet_id" { type = string }
-variable "dns_zone_blob_id" { type = string }
-variable "dns_zone_file_id" { type = string }
-
 resource "azurerm_storage_account" "this" {
   name                     = var.name
   resource_group_name      = var.resource_group_name
@@ -28,12 +21,12 @@ resource "azurerm_storage_share" "chroma" {
   quota                = 5
 }
 
-# Private Endpoints for Blob and File
 resource "azurerm_private_endpoint" "blob" {
   name                = "${var.name}-blob-pe"
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = var.subnet_id
+  tags                = var.tags
 
   private_service_connection {
     name                           = "blob-connection"
@@ -48,6 +41,7 @@ resource "azurerm_private_endpoint" "file" {
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = var.subnet_id
+  tags                = var.tags
 
   private_service_connection {
     name                           = "file-connection"
@@ -55,10 +49,4 @@ resource "azurerm_private_endpoint" "file" {
     is_manual_connection           = false
     subresource_names              = ["file"]
   }
-}
-
-output "name" { value = azurerm_storage_account.this.name }
-output "primary_connection_string" {
-  value     = azurerm_storage_account.this.primary_connection_string
-  sensitive = true
 }
