@@ -11,6 +11,10 @@ resource "azurerm_cosmosdb_account" "this" {
     location          = var.location
     failover_priority = 0
   }
+  geo_location {
+    location          = var.secondary_location
+    failover_priority = 1
+  }
   consistency_policy { consistency_level = "Session" }
 }
 

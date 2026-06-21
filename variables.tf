@@ -10,6 +10,12 @@ variable "location" {
   default     = "centralindia"
 }
 
+variable "dr_location" {
+  type        = string
+  description = "Disaster Recovery region"
+  default     = "southindia"
+}
+
 variable "environment_configs" {
   type = map(object({
     node_count          = number
