@@ -10,26 +10,26 @@ resource "azurerm_subnet" "aks" {
   name                 = "aks-subnet"
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.this.name
-  address_prefixes     = ["10.0.1.0/24"]
+  address_prefixes     = [cidrsubnet(var.address_space[0], 8, 1)]
 }
 
 resource "azurerm_subnet" "appgw" {
   name                 = "appgw-subnet"
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.this.name
-  address_prefixes     = ["10.0.2.0/24"]
+  address_prefixes     = [cidrsubnet(var.address_space[0], 8, 2)]
 }
 
 resource "azurerm_subnet" "bastion" {
   name                 = "AzureBastionSubnet"
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.this.name
-  address_prefixes     = ["10.0.3.0/24"]
+  address_prefixes     = [cidrsubnet(var.address_space[0], 8, 3)]
 }
 
 resource "azurerm_subnet" "pe" {
   name                 = "private-endpoints-subnet"
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.this.name
-  address_prefixes     = ["10.0.4.0/24"]
+  address_prefixes     = [cidrsubnet(var.address_space[0], 8, 4)]
 }
