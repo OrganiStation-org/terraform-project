@@ -87,7 +87,7 @@ module "monitoring" {
 module "private_dns" {
   source              = "./modules/private_dns"
   resource_group_name = module.resource_group.name
-  vnet_id             = module.networking.vnet_id
+  vnet_ids            = [module.networking.vnet_id, module.dr_networking.vnet_id]
   tags                = local.common_tags
 }
 
