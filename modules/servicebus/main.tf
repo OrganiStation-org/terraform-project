@@ -1,7 +1,10 @@
 variable "resource_group_name" { type = string }
 variable "location" { type = string }
 variable "name" { type = string }
-variable "sku" { type = string default = "Standard" }
+variable "sku" {
+  type    = string
+  default = "Standard"
+}
 
 resource "azurerm_servicebus_namespace" "this" {
   name                = var.name
@@ -26,4 +29,7 @@ resource "azurerm_servicebus_subscription" "subs" {
 }
 
 output "namespace_id" { value = azurerm_servicebus_namespace.this.id }
-output "connection_string" { value = azurerm_servicebus_namespace.this.default_primary_connection_string, sensitive = true }
+output "connection_string" {
+  value     = azurerm_servicebus_namespace.this.default_primary_connection_string
+  sensitive = true
+}
