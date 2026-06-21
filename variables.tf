@@ -20,6 +20,7 @@ variable "environment_configs" {
     max_count           = number
     min_count           = number
     log_retention_days  = number
+    namespace           = string
   }))
   description = "Configuration mapping for different environments"
   default = {
@@ -32,6 +33,7 @@ variable "environment_configs" {
       max_count          = 1
       min_count          = 1
       log_retention_days = 30
+      namespace          = "dev-ns"
     }
     prod = {
       node_count         = 3
@@ -42,6 +44,7 @@ variable "environment_configs" {
       max_count          = 5
       min_count          = 2
       log_retention_days = 90
+      namespace          = "prod-ns"
     }
   }
 }
