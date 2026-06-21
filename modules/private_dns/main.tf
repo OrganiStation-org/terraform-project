@@ -29,40 +29,40 @@ resource "azurerm_private_dns_zone" "sb" {
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "kv" {
-  for_each              = toset(var.vnet_ids)
-  name                  = "kv-link-${index(var.vnet_ids, each.value)}"
+  for_each              = var.vnet_ids
+  name                  = "kv-link-${each.key}"
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.kv.name
   virtual_network_id    = each.value
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "cosmos" {
-  for_each              = toset(var.vnet_ids)
-  name                  = "cosmos-link-${index(var.vnet_ids, each.value)}"
+  for_each              = var.vnet_ids
+  name                  = "cosmos-link-${each.key}"
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.cosmos.name
   virtual_network_id    = each.value
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "blob" {
-  for_each              = toset(var.vnet_ids)
-  name                  = "blob-link-${index(var.vnet_ids, each.value)}"
+  for_each              = var.vnet_ids
+  name                  = "blob-link-${each.key}"
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.blob.name
   virtual_network_id    = each.value
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "file" {
-  for_each              = toset(var.vnet_ids)
-  name                  = "file-link-${index(var.vnet_ids, each.value)}"
+  for_each              = var.vnet_ids
+  name                  = "file-link-${each.key}"
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.file.name
   virtual_network_id    = each.value
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "sb" {
-  for_each              = toset(var.vnet_ids)
-  name                  = "sb-link-${index(var.vnet_ids, each.value)}"
+  for_each              = var.vnet_ids
+  name                  = "sb-link-${each.key}"
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.sb.name
   virtual_network_id    = each.value
