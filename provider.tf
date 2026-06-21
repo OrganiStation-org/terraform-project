@@ -5,6 +5,15 @@ provider "azurerm" {
       recover_soft_deleted_key_vaults = true
     }
   }
+
+  default_tags {
+    tags = {
+      Environment = terraform.workspace
+      Owner       = "OrganiStation-DevOps"
+      Project     = "OrganiStation"
+      ManagedBy   = "Terraform"
+    }
+  }
 }
 
 provider "azuread" {}

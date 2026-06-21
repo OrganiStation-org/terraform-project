@@ -6,6 +6,12 @@ resource "random_string" "suffix" {
 
 locals {
   project_id = "${var.project_name}${random_string.suffix.result}"
+  common_tags = {
+    Environment = local.env
+    Owner       = "OrganiStation-DevOps"
+    Project     = "OrganiStation"
+    ManagedBy   = "Terraform"
+  }
 }
 
 module "resource_group" {
@@ -92,7 +98,7 @@ module "keyvault" {
   sku_name            = local.config.kv_sku
   subnet_id           = module.networking.private_endpoints_subnet_id
   dns_zone_id         = module.private_dns.kv_dns_zone_id
-  aks_identity_id     = module.identity.aks_workload_identity_id
+  aks_identity_id     = module.identity.aks_workload_identity_principal_id
 }
 
 module "cosmosdb" {
