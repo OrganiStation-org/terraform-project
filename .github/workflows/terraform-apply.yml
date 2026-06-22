@@ -1,4 +1,4 @@
-name: Infrastructure as Code(Terraform)
+name: Infrastructure as Code (Terraform)
 
 on:
   push:

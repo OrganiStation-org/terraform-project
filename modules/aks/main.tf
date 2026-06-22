@@ -39,4 +39,9 @@ resource "azurerm_kubernetes_cluster" "this" {
   oms_agent {
     log_analytics_workspace_id = var.log_analytics_id
   }
+
+  monitor_metrics {
+    annotations_allowed = null
+    labels_allowed      = null
+  }
 }
