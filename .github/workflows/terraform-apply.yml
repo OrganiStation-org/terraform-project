@@ -37,12 +37,15 @@ jobs:
             -backend-config="container_name=tfstate" \
             -backend-config="key=terraform.tfstate"
 
+      - name: Terraform Workspace Select/Create
+        run: terraform workspace select prod || terraform workspace new prod
+
       - name: Terraform Validate
         run: terraform validate
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -no-color -out=tfplan
+        run: terraform plan -no-color -var-file="prod.tfvars" -out=tfplan
         
       - name: Save Plan Artifact
         uses: actions/upload-artifact@v4
@@ -71,6 +74,9 @@ jobs:
             -backend-config="storage_account_name=${{ vars.BACKEND_STORAGE }}" \
             -backend-config="container_name=tfstate" \
             -backend-config="key=terraform.tfstate"
+
+      - name: Terraform Workspace Select
+        run: terraform workspace select prod
 
       - name: Download Plan Artifact
         uses: actions/download-artifact@v4
