@@ -1,10 +1,3 @@
-variable "primary_resource_group" { type = string }
-variable "secondary_resource_group" { type = string }
-variable "primary_vnet_name" { type = string }
-variable "secondary_vnet_name" { type = string }
-variable "primary_vnet_id" { type = string }
-variable "secondary_vnet_id" { type = string }
-
 resource "azurerm_virtual_network_peering" "primary_to_secondary" {
   name                         = "peak-to-dr"
   resource_group_name          = var.primary_resource_group

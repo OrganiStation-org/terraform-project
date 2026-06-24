@@ -13,7 +13,13 @@ variable "location" {
 variable "dr_location" {
   type        = string
   description = "Disaster Recovery region"
-  default     = "westus2"
+  default     = "southindia"
+}
+
+variable "service_bus_location" {
+  type        = string
+  description = "Azure region for Service Bus (co-located with primary workload for low latency)"
+  default     = "centralindia"
 }
 
 variable "environment_configs" {

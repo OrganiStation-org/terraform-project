@@ -85,6 +85,16 @@ module "monitoring" {
   tags                = local.common_tags
 }
 
+module "application_insights" {
+  source                     = "./modules/application_insights"
+  name                       = "${local.project_id}-appinsights-${local.env}"
+  location                   = module.resource_group.location
+  resource_group_name        = module.resource_group.name
+  log_analytics_workspace_id = module.monitoring.log_analytics_id
+  retention_in_days          = local.config.log_retention_days
+  tags                       = local.common_tags
+}
+
 module "private_dns" {
   source              = "./modules/private_dns"
   resource_group_name = module.resource_group.name
@@ -109,7 +119,7 @@ module "storage" {
 module "servicebus" {
   source              = "./modules/servicebus"
   resource_group_name = module.resource_group.name
-  location            = module.resource_group.location
+  location            = var.service_bus_location
   name                = "${local.project_id}-sb-${local.env}"
   sku                 = "Standard"
   tags                = local.common_tags

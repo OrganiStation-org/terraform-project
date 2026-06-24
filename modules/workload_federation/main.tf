@@ -1,9 +1,3 @@
-variable "resource_group_name" { type = string }
-variable "oidc_issuer_url" { type = string }
-variable "namespace" { type = string }
-variable "env" { type = string }
-variable "parent_id" { type = string }
-
 locals {
   services = ["auth", "ai", "hr", "finance", "projects", "gateway", "frontend", "notification"]
 }

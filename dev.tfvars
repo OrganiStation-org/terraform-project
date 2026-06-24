@@ -6,7 +6,8 @@
 
 project_name = "mahesh"
 location     = "centralindia"
-dr_location  = "westus2"
+dr_location          = "southindia"
+service_bus_location = "centralindia"
 
 environment_configs = {
   dev = {

@@ -29,6 +29,9 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+      - name: Terraform Fmt
+        run: terraform fmt -check -recursive
+
       - name: Terraform Init
         run: |
           terraform init \
@@ -44,9 +47,8 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
-        id: plan
         run: terraform plan -no-color -var-file="prod.tfvars" -out=tfplan
-        
+
       - name: Save Plan Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -59,13 +61,15 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Fmt
+        run: terraform fmt -check -recursive
 
       - name: Terraform Init
         run: |
@@ -78,10 +82,16 @@ jobs:
       - name: Terraform Workspace Select/Create
         run: terraform workspace select prod || terraform workspace new prod
 
+      - name: Terraform Validate
+        run: terraform validate
+
       - name: Download Plan Artifact
         uses: actions/download-artifact@v4
         with:
           name: tfplan
+
+      - name: Terraform Plan
+        run: terraform plan -no-color -var-file="prod.tfvars"
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan

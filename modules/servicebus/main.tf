@@ -16,14 +16,8 @@ locals {
 }
 
 resource "azurerm_servicebus_subscription" "subs" {
-  for_each            = toset(local.subs)
-  name                = each.key
-  topic_id            = azurerm_servicebus_topic.notifications.id
-  max_delivery_count  = 10
-}
-
-output "namespace_id" { value = azurerm_servicebus_namespace.this.id }
-output "connection_string" {
-  value     = azurerm_servicebus_namespace.this.default_primary_connection_string
-  sensitive = true
+  for_each           = toset(local.subs)
+  name               = each.key
+  topic_id           = azurerm_servicebus_topic.notifications.id
+  max_delivery_count = 10
 }

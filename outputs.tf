@@ -22,3 +22,12 @@ output "acr_login_server" {
 output "resource_group_name" {
   value = module.resource_group.name
 }
+
+output "application_insights_app_id" {
+  value = module.application_insights.app_id
+}
+
+output "application_insights_connection_string" {
+  value     = module.application_insights.connection_string
+  sensitive = true
+}
