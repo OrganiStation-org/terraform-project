@@ -1,12 +1,12 @@
 resource "azurerm_key_vault" "this" {
-  name                        = var.name
-  location                    = var.location
-  resource_group_name         = var.resource_group_name
-  tenant_id                   = var.tenant_id
-  sku_name                    = var.sku_name
-  enable_rbac_authorization   = true
+  name                          = var.name
+  location                      = var.location
+  resource_group_name           = var.resource_group_name
+  tenant_id                     = var.tenant_id
+  sku_name                      = var.sku_name
+  enable_rbac_authorization     = true
   public_network_access_enabled = false
-  tags                        = var.tags
+  tags                          = var.tags
 }
 
 resource "azurerm_private_endpoint" "kv" {

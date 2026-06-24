@@ -4,8 +4,8 @@
 #        terraform apply -var-file="prod.tfvars"
 # ============================================================
 
-project_name = "mahesh"
-location     = "centralindia"
+project_name         = "mahesh"
+location             = "centralindia"
 dr_location          = "southindia"
 service_bus_location = "centralindia"
 
@@ -26,14 +26,14 @@ environment_configs = {
   prod = {
     # High-availability, optimized for regional vCPU quota (10 vCPU limit)
     # Using D2s_v3 (2 vCPU) x 2 nodes = 4 vCPUs initially
-    node_count         = 2
-    vm_size            = "Standard_D2s_v3"
+    node_count = 2
+    vm_size    = "Standard_D2s_v3"
 
     # Premium Key Vault SKU (HSM-backed secrets)
-    kv_sku             = "premium"
+    kv_sku = "premium"
 
     # Higher CosmosDB throughput for production load
-    cosmos_throughput  = 1000
+    cosmos_throughput = 1000
 
     # Autoscaling enabled: scales from 2 to 5 nodes
     enable_autoscaling = true
@@ -44,6 +44,6 @@ environment_configs = {
     log_retention_days = 90
 
     # Kubernetes namespace
-    namespace          = "prod-ns"
+    namespace = "prod-ns"
   }
 }

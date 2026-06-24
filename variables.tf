@@ -24,15 +24,15 @@ variable "service_bus_location" {
 
 variable "environment_configs" {
   type = map(object({
-    node_count          = number
-    vm_size             = string
-    kv_sku              = string
-    cosmos_throughput   = number
-    enable_autoscaling  = bool
-    max_count           = number
-    min_count           = number
-    log_retention_days  = number
-    namespace           = string
+    node_count         = number
+    vm_size            = string
+    kv_sku             = string
+    cosmos_throughput  = number
+    enable_autoscaling = bool
+    max_count          = number
+    min_count          = number
+    log_retention_days = number
+    namespace          = string
   }))
   description = "Configuration mapping for different environments"
 }
@@ -40,7 +40,7 @@ variable "environment_configs" {
 locals {
   # Default to 'prod' if the workspace is 'default'
   env = terraform.workspace == "default" ? "prod" : terraform.workspace
-  
+
   # Configuration selected from the provided tfvars
   config = var.environment_configs[local.env]
 }

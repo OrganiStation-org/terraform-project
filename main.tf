@@ -98,11 +98,11 @@ module "application_insights" {
 module "private_dns" {
   source              = "./modules/private_dns"
   resource_group_name = module.resource_group.name
-  vnet_ids            = {
+  vnet_ids = {
     primary = module.networking.vnet_id
     dr      = module.dr_networking.vnet_id
   }
-  tags                = local.common_tags
+  tags = local.common_tags
 }
 
 module "storage" {

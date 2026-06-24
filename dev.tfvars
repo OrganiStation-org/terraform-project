@@ -4,22 +4,22 @@
 #        terraform apply -var-file="dev.tfvars"
 # ============================================================
 
-project_name = "mahesh"
-location     = "centralindia"
+project_name         = "mahesh"
+location             = "centralindia"
 dr_location          = "southindia"
 service_bus_location = "centralindia"
 
 environment_configs = {
   dev = {
     # Low-cost, single-node cluster for development
-    node_count         = 1
-    vm_size            = "Standard_D2s_v3"
+    node_count = 1
+    vm_size    = "Standard_D2s_v3"
 
     # Standard Key Vault SKU (no HSM needed in dev)
-    kv_sku             = "standard"
+    kv_sku = "standard"
 
     # Minimum CosmosDB throughput
-    cosmos_throughput  = 400
+    cosmos_throughput = 400
 
     # No autoscaling for dev (cost savings)
     enable_autoscaling = false
@@ -30,7 +30,7 @@ environment_configs = {
     log_retention_days = 30
 
     # Kubernetes namespace
-    namespace          = "dev-ns"
+    namespace = "dev-ns"
   }
 
   # prod key must exist to satisfy the variable type definition

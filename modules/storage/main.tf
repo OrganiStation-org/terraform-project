@@ -4,7 +4,7 @@ resource "azurerm_storage_account" "this" {
   location                 = var.location
   account_tier             = "Standard"
   account_replication_type = "GRS"
-  
+
   public_network_access_enabled = true
   tags                          = var.tags
 }
