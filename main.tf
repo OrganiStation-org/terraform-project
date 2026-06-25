@@ -71,7 +71,7 @@ module "acr" {
   resource_group_name = module.resource_group.name
   location            = module.resource_group.location
   name                = "${replace(local.project_id, "-", "")}acr${local.env}"
-  aks_principal_id    = module.identity.aks_kubelet_identity_id
+  aks_principal_id    = module.aks.kubelet_identity_object_id
   tags                = local.common_tags
 }
 
