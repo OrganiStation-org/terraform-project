@@ -262,7 +262,8 @@ resource "azurerm_linux_virtual_machine" "management_vm" {
   name                            = "${local.project_id}-vm-${local.env}"
   location                        = module.resource_group.location
   resource_group_name             = module.resource_group.name
-  size                            = "Standard_B2s"
+  size                            = "Standard_D2s_v3"
+  zone                            = "1"
   admin_username                  = "Mahesh"
   admin_password                  = "Mahesh@050903"
   disable_password_authentication = false
@@ -285,8 +286,4 @@ resource "azurerm_linux_virtual_machine" "management_vm" {
   tags = local.common_tags
 }
 
-resource "azurerm_key_vault_secret" "vm_password" {
-  name         = "aks-vm-password"
-  value        = "Mahesh@050903"
-  key_vault_id = module.keyvault.id
-}
+
