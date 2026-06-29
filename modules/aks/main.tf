@@ -11,7 +11,7 @@ resource "azurerm_kubernetes_cluster" "this" {
     node_count          = var.node_count
     vm_size             = var.vm_size
     vnet_subnet_id      = var.vnet_subnet_id
-    enable_auto_scaling = var.enable_autoscaling
+    auto_scaling_enabled = var.enable_autoscaling
     max_count           = var.enable_autoscaling ? var.max_count : null
     min_count           = var.enable_autoscaling ? var.min_count : null
     type                = "VirtualMachineScaleSets"
