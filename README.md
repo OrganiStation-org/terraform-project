@@ -1,36 +1,37 @@
 # 🏗️ OrganiStation Infrastructure as Code (Terraform)
 
-This project manages the end-to-end Azure cloud infrastructure for the OrganiStation platform. It is engineered with a **Security-First** and **Modular** approach, ensuring repeatable deployments across multiple environments.
+This repository hosts the **Azure Infrastructure as Code (IaC)** configurations for the OrganiStation platform. It is engineered with a **Security-First**, **Modular**, and **Multi-Region** approach to guarantee automated, consistent deployments.
 
 ---
 
-## 🏛️ Architecture Overview
+## 🏛️ Infrastructure Architecture
 
-The infrastructure is broken down into 16 specialized modules, orchestrating the following cloud components:
+The platform's resources are partitioned into modular blocks, enabling rapid upgrades, isolated failure domains, and environment decoupling (Dev, Prod, DR):
 
 ```mermaid
 graph TD
-    subgraph "Networking Layer"
+    subgraph "Networking & Traffic Management"
+        AppGW[Application Gateway]
         VNet[Azure VNet]
-        Subnets[Gateway, AKS, Endpoint Subnets]
+        Peering[VNet Peering]
         PrvDNS[Private DNS Zones]
     end
 
-    subgraph "Compute & Registry"
+    subgraph "Compute & Builds"
         AKS[Azure Kubernetes Service]
         ACR[Azure Container Registry]
     end
 
-    subgraph "Messaging & Real-time"
-        SB[Service Bus Topic/Subs]
-        SR[SignalR Service]
-        ACS[Communication Services]
+    subgraph "Messaging & Real-time Integration"
+        SB[Service Bus Topics/Subs]
+        WPS[WebPubSub Push Gateway]
+        ACS[Communication Services Email]
     end
 
-    subgraph "Data & Secrets"
+    subgraph "Data & Secrets Security"
         KV[Azure Key Vault]
         CDB[CosmosDB Mongo API]
-        Store[Storage Blob / File Share]
+        Store[Blob & File Storage]
     end
 
     AKS --> SB
@@ -41,70 +42,68 @@ graph TD
 
 ---
 
-## 📦 Modular Structure
+## 📦 Infrastructure Modules (20 Specialized Blocks)
 
-| Module | Responsibility | High-Res Feature |
+| Module | Responsibility | Key Attributes |
 | :--- | :--- | :--- |
-| **`aks`** | Kubernetes Orchestration | Autoscaling Enabled + OIDC Issuer |
-| **`networking`** | VNet & Subnet Slicing | Isolated subnetwork for Private Endpoints |
-| **`storage`** | Data Persistence | Blob (PDFs) & File Share (ChromaDB) |
-| **`keyvault`** | Secret Management | RBAC-based access (No Access Policies) |
-| **`servicebus`**| Messaging | Subscriptions for HR/Leave events |
-| **`identity`** | Workload Identity | Provisioning for 8 service identities |
-| **`private_dns`**| Internal Networking | `privatelink` zones for all PaaS services |
+| **`resource_group`** | Core resource grouping | Creates the primary environment resource group. |
+| **`dr_resource_group`**| Disaster recovery container | Creates the backup environment resource group in secondary region. |
+| **`networking`** | Virtual network segmentation | Configures subnets for App Gateway, AKS Nodes, Private Endpoints, and Bastion. |
+| **`dr_networking`** | DR virtual network | Sets up backup subnet ranges for failover capabilities. |
+| **`vnet_peering`** | Inter-VNet routing | Establishes low-latency, private bi-directional peer links between VNets. |
+| **`identity`** | Security identities | Provisions user-assigned managed identities for AKS control plane and kubelets. |
+| **`acr`** | Container registry | Hosts secure, private Docker images with automated AKS pull bindings. |
+| **`monitoring`** | Central log collection | Provisions a Log Analytics Workspace for unified telemetry. |
+| **`application_insights`**| APM telemetry | Real-time monitoring, trace context, and log capturing for microservices. |
+| **`private_dns`** | Name resolution | Manages internal resolution zones for Private Endpoint services (`privatelink`). |
+| **`storage`** | File and blob shares | Provisions Blob storage for RAG PDFs and File share for ChromaDB vectors. |
+| **`servicebus`** | Event broker | Configures messaging topics and subscriptions for leave/approval events. |
+| **`communication_services`**| Transactional mail client | Provisions the mail service for outbound alerts. |
+| **`keyvault`** | Secret and key vault | Stores environment secret parameters using Azure RBAC validation. |
+| **`cosmosdb`** | Persistent database | Deploys Cosmos DB Mongo API with replica regions enabled for high availability. |
+| **`aks`** | Kubernetes runner | Spins up the AKS cluster with autoscaling, system pools, and OIDC settings. |
+| **`app_gateway`** | Layer-7 load balancing | Manages public SSL traffic termination and Ingress path routing. |
+| **`bastion`** | Secure management access | Deploys a managed bastion host for secure console access to nodes. |
+| **`workload_federation`**| Identity federation | Binds AKS ServiceAccounts directly to Azure AD/Entra identities. |
 
 ---
 
-## 🌓 Environment Workspaces
+## 🌓 Decoupled Environments (Workspaces)
 
-This project uses **Terraform Workspaces** to decouple environments:
-- **`dev`**: Standard SKUs (Standard Service Bus, DS2_v2 Nodes) for cost-efficiency.
-- **`prod`**: Premium SKUs (Premium Service Bus for Private Link, D4_v2 Nodes) for high availability.
+Environments are completely isolated using **Terraform Workspaces** and variable files:
 
----
-
-## 🔐 Authentication & Security
-
-### 1. Azure OIDC (OpenID Connect)
-This project **does not use static client secrets**. It relies on GitHub Actions OIDC to authenticate with Azure.
-- Ensure your GitHub Enterprise/Org is added as a **Federated Credential** on the Deployment Identity in Azure.
-
-### 2. Private Link Enforcement
-All high-risk services (CosmosDB, Storage, Key Vault) are protected by **Private Endpoints**. Public network access is disabled by default, ensuring traffic never leaves the Azure Backbone.
+- **`dev` workspace**: Uses cost-optimized SKUs (Standard Service Bus, DS2_v2 VM nodes, single-region DB).
+- **`prod` workspace**: Enforces geo-replication (CosmosDB in failover regions, Premium Service Bus, larger node pools, Private Endpoint lockdown).
 
 ---
 
-## 🚀 Usage Instructions
+## 🔒 Security Best Practices Enforced
 
-### Initialize the Backend
-Ensure you have an Azure Storage account to host the Terraform state.
+1. **Zero Secret Footprint**: Authentication utilizes **Azure Workload Identity** and OIDC. No long-lived Service Principal credentials or passwords are stored in the codebase or GitHub Actions.
+2. **Private Network Backbone**: Public access is disabled on Cosmos DB, Storage Accounts, and Key Vault. Communication occurs entirely over **Private Endpoints** inside the VNet.
+3. **Least Privilege access**: Key Vault access is managed strictly through Azure RBAC, eliminating legacy Access Policies.
+
+---
+
+## 🚀 Execution & Usage
+
+### 1. Initialize State Backend
 ```bash
 terraform init \
-  -backend-config="resource_group_name=YOUR_TF_STATE_RG" \
-  -backend-config="storage_account_name=YOUR_TF_STATE_STORE" \
-  -backend-config="container_name=tfstate" \
+  -backend-config="resource_group_name=tfstate-rg" \
+  -backend-config="storage_account_name=organistationtfstate" \
+  -backend-config="container_name=statefiles" \
   -backend-config="key=organistation.tfstate"
 ```
 
-### Deployment Workflow
-1.  **Select Workspace**: `terraform workspace select dev`
-2.  **Plan Changes**: `terraform plan -var-file="dev.tfvars"`
-3.  **Apply Changes**: `terraform apply -var-file="dev.tfvars"`
+### 2. Deploy Infrastructure
+```bash
+# Select environment
+terraform workspace select dev
 
----
+# Plan infrastructure changes
+terraform plan -var-file="dev.tfvars"
 
-## 📋 Variables Cheat Sheet
-
-| Variable | Type | Description |
-| :--- | :--- | :--- |
-| `project_name` | string | Prefix for all resources (e.g., `organistation`) |
-| `location` | string | Target Azure Region (e.g., `eastus`) |
-| `node_count` | number | Minimum AKS node count |
-| `vm_size` | string | Azure VM Size for the node pool |
-
----
-
-## 🛠️ Maintenance
-
-- **Adding a Microservice**: Add the new service name to the `locals` block in `modules/workload_federation/main.tf` to generate the new Federated Credential.
-- **Scaling nodes**: Update the `max_count` in your specific `.tfvars` file and run `terraform apply`.
+# Apply changes
+terraform apply -var-file="dev.tfvars" -auto-approve
+```

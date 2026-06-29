@@ -71,7 +71,7 @@ module "acr" {
   resource_group_name = module.resource_group.name
   location            = module.resource_group.location
   name                = "${replace(local.project_id, "-", "")}acr${local.env}"
-  aks_principal_id    = module.aks.kubelet_identity_object_id
+  aks_principal_id    = module.identity.aks_kubelet_identity_id
   tags                = local.common_tags
 }
 
@@ -208,4 +208,85 @@ module "workload_federation" {
   namespace           = local.config.namespace
   env                 = local.env
   parent_id           = module.identity.aks_workload_identity_id
+}
+
+resource "azurerm_public_ip" "vm_pip" {
+  name                = "${local.project_id}-vm-pip-${local.env}"
+  location            = module.resource_group.location
+  resource_group_name = module.resource_group.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+  tags                = local.common_tags
+}
+
+resource "azurerm_network_security_group" "vm_nsg" {
+  name                = "${local.project_id}-vm-nsg-${local.env}"
+  location            = module.resource_group.location
+  resource_group_name = module.resource_group.name
+
+  security_rule {
+    name                       = "SSH"
+    priority                   = 1001
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  tags = local.common_tags
+}
+
+resource "azurerm_network_interface" "vm_nic" {
+  name                = "${local.project_id}-vm-nic-${local.env}"
+  location            = module.resource_group.location
+  resource_group_name = module.resource_group.name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = module.networking.vm_subnet_id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.vm_pip.id
+  }
+  tags = local.common_tags
+}
+
+resource "azurerm_network_interface_security_group_association" "vm_nic_nsg" {
+  network_interface_id      = azurerm_network_interface.vm_nic.id
+  network_security_group_id = azurerm_network_security_group.vm_nsg.id
+}
+
+resource "azurerm_linux_virtual_machine" "management_vm" {
+  name                            = "${local.project_id}-vm-${local.env}"
+  location                        = module.resource_group.location
+  resource_group_name             = module.resource_group.name
+  size                            = "Standard_B2s"
+  admin_username                  = "Mahesh"
+  admin_password                  = "Mahesh@050903"
+  disable_password_authentication = false
+  network_interface_ids = [
+    azurerm_network_interface.vm_nic.id,
+  ]
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts"
+    version   = "latest"
+  }
+
+  tags = local.common_tags
+}
+
+resource "azurerm_key_vault_secret" "vm_password" {
+  name         = "aks-vm-password"
+  value        = "Mahesh@050903"
+  key_vault_id = module.keyvault.id
 }

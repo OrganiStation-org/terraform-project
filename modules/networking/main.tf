@@ -33,3 +33,10 @@ resource "azurerm_subnet" "pe" {
   virtual_network_name = azurerm_virtual_network.this.name
   address_prefixes     = [cidrsubnet(var.address_space[0], 8, 4)]
 }
+
+resource "azurerm_subnet" "vm" {
+  name                 = "vm-subnet"
+  resource_group_name  = var.resource_group_name
+  virtual_network_name = azurerm_virtual_network.this.name
+  address_prefixes     = [cidrsubnet(var.address_space[0], 8, 5)]
+}
