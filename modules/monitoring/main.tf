@@ -22,7 +22,6 @@ resource "azurerm_dashboard_grafana" "this" {
   location                      = var.location
   sku                           = "Standard"
   public_network_access_enabled = true
-  grafana_version               = "12"
 
   identity {
     type = "SystemAssigned"
